@@ -1,12 +1,13 @@
 import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import MainNavigation from './navigation/MainNavigation';
 
-function App(): React.JSX.Element {
+const App = () => {
   return (
-    <SafeAreaView>
-      <Text>Welcome to donation app</Text>
-    </SafeAreaView>
+    <NavigationContainer>
+      <MainNavigation />
+    </NavigationContainer>
   );
-}
+};
 
 export default App;
