@@ -4,13 +4,18 @@ import { getFontFamily } from '../../utils/helper';
 const style = StyleSheet.create({
   homePage: {
     flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
   },
   homePageWrapper: {
-    marginTop: 24,
-    marginLeft: 24,
-    marginRight: 24,
     flex: 1,
+    gap: 8,
+    paddingTop: 24,
+    paddingLeft: 24,
+    paddingRight: 24,
+    width: '100%',
   },
   title: {
     textAlign: 'center',
