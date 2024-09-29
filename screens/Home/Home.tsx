@@ -1,22 +1,30 @@
 import React, { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, View } from 'react-native';
 import Header from '../../components/Header/Header';
 import Button from '../../components/Button/Button';
 import Search from '../../components/Search/Search';
 import Badge from '../../components/Badge/Badge';
 import Tab from '../../components/Tab/Tab';
-import style from './style';
 import DonationItem from '../../components/DonationItem/DonationItem';
+import { RootState } from '../../redux/store';
+
+import style from './style';
+import { updateFirstName } from '../../redux/reducers/User';
 
 const Home = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
   const handlePress = useCallback(() => {
-    // console.log('click click ===');
-  }, []);
+    const randomIndex = Math.floor(Math.random() * 100);
+    dispatch(updateFirstName({ firstName: `${randomIndex} sajal` }));
+  }, [dispatch]);
 
   return (
     <SafeAreaView style={style.homePage}>
       <View style={style.homePageWrapper}>
-        <Header title="Sohrab Hi, " type="h1" color="red" />
+        <Header title={user.firstName + ' ' + user.lastName} type="h1" color="red" />
         <Button onPress={handlePress} title="Submit" animationType="scale" />
         <Tab title={'Highlight'} />
         <Tab title={'Highlight'} isInactive={true} />
