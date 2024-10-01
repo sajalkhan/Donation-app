@@ -6,10 +6,11 @@ import { scaleFontSize } from '../../assets/styles/scaling';
 import style from './style';
 
 interface SearchProps {
-  onSearch: (searchValue: string) => void;
+  placeholder?: string;
+  onSearch?: (searchValue: string) => void;
 }
 
-const Search: React.FC<SearchProps> = ({ onSearch }) => {
+const Search: React.FC<SearchProps> = ({ onSearch, placeholder = 'search' }) => {
   const textInputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState<string>('');
 
@@ -19,13 +20,19 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
 
   const handleSearch = (searchValue: string) => {
     setSearch(searchValue);
-    onSearch(searchValue);
+    onSearch && onSearch(searchValue);
   };
 
   return (
     <Pressable style={style.searchInputContainer} onPress={handleFocus}>
       <FontAwesomeIcon icon={faSearch} color={'#25C0FF'} size={scaleFontSize(22)} />
-      <TextInput ref={textInputRef} style={style.searchInput} value={search} onChangeText={handleSearch} />
+      <TextInput
+        value={search}
+        ref={textInputRef}
+        placeholder={placeholder}
+        style={style.searchInput}
+        onChangeText={handleSearch}
+      />
     </Pressable>
   );
 };

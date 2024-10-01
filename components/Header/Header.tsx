@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TextStyle } from 'react-native';
 import style from './style';
 
 interface HeaderProps {
   title: string;
-  type: 'h1' | 'h2' | 'h3';
   color?: string;
+  numberOfLines?: number;
+  type?: 'h1' | 'h2' | 'h3';
 }
 
-const Header: React.FC<HeaderProps> = ({ title, type, color = '#000000' }) => {
-  const getStyle = (): object => {
+const Header: React.FC<HeaderProps> = ({ title, type = 'h1', color, numberOfLines }) => {
+  const getStyle = (): TextStyle => {
     switch (type) {
       case 'h1':
         return style.title1;
@@ -24,7 +25,9 @@ const Header: React.FC<HeaderProps> = ({ title, type, color = '#000000' }) => {
 
   return (
     <View>
-      <Text style={[getStyle(), color && { color: color }]}>{title}</Text>
+      <Text style={[getStyle(), color ? { color } : undefined]} numberOfLines={numberOfLines}>
+        {title}
+      </Text>
     </View>
   );
 };

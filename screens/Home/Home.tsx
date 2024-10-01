@@ -1,51 +1,82 @@
-import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { SafeAreaView, View } from 'react-native';
-import Header from '../../components/Header/Header';
-import Button from '../../components/Button/Button';
-import Search from '../../components/Search/Search';
-import Badge from '../../components/Badge/Badge';
-import Tab from '../../components/Tab/Tab';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaView, ScrollView, Image, Pressable, View } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+
+import HeaderSection from '../../components/HeaderSection/HeaderSection';
+import SearchSection from '../../components/SearchSection/SearchSection';
 import DonationItem from '../../components/DonationItem/DonationItem';
+import CategoriesSection from '../../components/CategoriesSection/CategoriesSection';
+
 import { RootState } from '../../redux/store';
-
+import { updateSelectedCategoryId } from '../../redux/reducers/Categories';
+import { TDonationItem, updateSelectedDonationId } from '../../redux/reducers/Donations';
+import globalStyle from '../../assets/styles/globalStyle';
+import { Routes } from '../../navigation/Routes';
 import style from './style';
-import { updateFirstName } from '../../redux/reducers/User';
 
-const Home = () => {
-  const user = useSelector((state: RootState) => state.user);
+interface HomeProps {
+  navigation: NavigationProp<any>;
+}
+
+const Home: React.FC<HomeProps> = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const handlePress = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * 100);
-    dispatch(updateFirstName({ firstName: `${randomIndex} sajal` }));
-  }, [dispatch]);
+  const { firstName, lastName, profileImage } = useSelector((state: RootState) => state.user);
+  const { categories, selectedCategoryId } = useSelector((state: RootState) => state.categories);
+  const donations = useSelector((state: RootState) => state.donations);
+
+  const [donationItems, setDonationItems] = useState<TDonationItem[]>([]);
+
+  useEffect(() => {
+    const filteredItems = donations.items.filter(item => item.categoryIds.includes(selectedCategoryId));
+    setDonationItems(filteredItems);
+  }, [selectedCategoryId, donations.items]);
+
+  const categoryInfo = categories.find(cat => cat.categoryId === selectedCategoryId);
+
+  const handleDonationItemPress = (selectedDonationId: number) => {
+    dispatch(updateSelectedDonationId(selectedDonationId));
+    navigation.navigate(Routes.SingleDonationItem, { categoryInfo });
+  };
 
   return (
-    <SafeAreaView style={style.homePage}>
-      <View style={style.homePageWrapper}>
-        <Header title={user.firstName + ' ' + user.lastName} type="h1" color="red" />
-        <Button onPress={handlePress} title="Submit" animationType="scale" />
-        <Tab title={'Highlight'} />
-        <Tab title={'Highlight'} isInactive={true} />
+    <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <HeaderSection firstName={firstName} lastName={lastName} profileImage={profileImage} />
+        <SearchSection />
 
-        <Badge title="Environment" />
+        <Pressable style={style.highlightedImageContainer}>
+          <Image
+            style={style.highlightedImage}
+            source={require('../../assets/images/highlighted_image.png')}
+            resizeMode="contain"
+          />
+        </Pressable>
 
-        <Search
-          onSearch={value => {
-            console.log(value);
-          }}
+        <CategoriesSection
+          categories={categories}
+          selectedCategory={selectedCategoryId}
+          onCategorySelect={categoryId => dispatch(updateSelectedCategoryId(categoryId))}
         />
 
-        <DonationItem
-          uri={
-            'https://img.pixers.pics/pho_wat(s3:700/FO/44/24/64/31/700_FO44246431_ab024cd8251bff09ce9ae6ecd05ec4a8.jpg,525,700,cms:2018/10/5bd1b6b8d04b8_220x50-watermark.png,over,305,650,jpg)/stickers-cactus-cartoon-illustration.jpg.jpg'
-          }
-          badgeTitle={'Environment'}
-          donationTitle={'Tree Cactus'}
-          price={44}
-        />
-      </View>
+        {donationItems.length > 0 && (
+          <View style={style.donationItemsContainer}>
+            {donationItems.map(item => (
+              <View key={item.donationItemId} style={style.singleDonationItem}>
+                <DonationItem
+                  onPress={handleDonationItemPress}
+                  donationItemId={item.donationItemId}
+                  uri={item.image}
+                  donationTitle={item.name}
+                  badgeTitle={categoryInfo?.name || ''}
+                  price={parseFloat(item.price)}
+                />
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

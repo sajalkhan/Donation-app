@@ -4,10 +4,14 @@ import { persistReducer, persistStore } from 'redux-persist';
 // import { logger } from 'redux-logger';
 
 import User from './reducers/User';
+import Categories from './reducers/Categories';
+import Donations from './reducers/Donations';
 
 // Creating a rootReducer that combines all reducers in the app
 const rootReducer = combineReducers({
   user: User,
+  categories: Categories,
+  donations: Donations,
 });
 
 // Configuring the redux-persist library to persist the root reducer with AsyncStorage
@@ -23,6 +27,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const customMiddleWare = (defaultMiddleware: any) => {
   const middleware = defaultMiddleware({
     serializableCheck: false, // Disable serializable check to avoid serialization errors
+    immutableCheck: false, // Disable immutable state check to improve performance
   });
 
   // Add logger middleware to the array

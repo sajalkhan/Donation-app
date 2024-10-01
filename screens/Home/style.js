@@ -1,27 +1,39 @@
 import { StyleSheet } from 'react-native';
-import { getFontFamily } from '../../utils/helper';
+import { horizontalScale, verticalScale } from '../../assets/styles/scaling';
 
 const style = StyleSheet.create({
-  homePage: {
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+  searchBox: {
+    marginHorizontal: horizontalScale(24),
+    marginTop: verticalScale(20),
   },
-  homePageWrapper: {
-    flex: 1,
-    gap: 8,
-    paddingTop: 24,
-    paddingLeft: 24,
-    paddingRight: 24,
+  highlightedImageContainer: {
+    marginHorizontal: horizontalScale(24),
+  },
+  highlightedImage: {
     width: '100%',
+    height: verticalScale(160),
   },
-  title: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    fontFamily: getFontFamily('Inter', 900),
+  categoryHeader: {
+    marginHorizontal: horizontalScale(24),
+    marginBottom: verticalScale(16),
+    marginTop: verticalScale(6),
+  },
+  categories: {
+    marginLeft: horizontalScale(24),
+  },
+  categoryItem: {
+    marginRight: horizontalScale(10),
+  },
+  donationItemsContainer: {
+    marginTop: verticalScale(20),
+    marginHorizontal: horizontalScale(24),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  singleDonationItem: {
+    maxWidth: '49%',
+    marginBottom: verticalScale(23),
   },
 });
 
