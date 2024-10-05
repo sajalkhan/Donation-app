@@ -11,6 +11,9 @@ import CategoriesSection from '../../components/CategoriesSection/CategoriesSect
 import { RootState } from '../../redux/store';
 import { updateSelectedCategoryId } from '../../redux/reducers/Categories';
 import { TDonationItem, updateSelectedDonationId } from '../../redux/reducers/Donations';
+import { resetToInitialState } from '../../redux/reducers/User';
+import { logOut } from '../../api/user';
+
 import globalStyle from '../../assets/styles/globalStyle';
 import { Routes } from '../../navigation/Routes';
 import style from './style';
@@ -22,7 +25,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { firstName, lastName, profileImage } = useSelector((state: RootState) => state.user);
+  const { displayName, profileImage } = useSelector((state: RootState) => state.user);
   const { categories, selectedCategoryId } = useSelector((state: RootState) => state.categories);
   const donations = useSelector((state: RootState) => state.donations);
 
@@ -40,10 +43,15 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     navigation.navigate(Routes.SingleDonationItem, { categoryInfo });
   };
 
+  const handleLogout = () => {
+    dispatch(resetToInitialState());
+    logOut();
+  };
+
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <HeaderSection firstName={firstName} lastName={lastName} profileImage={profileImage} />
+        <HeaderSection title={displayName + ' 👋'} profileImage={profileImage} logOut={handleLogout} />
         <SearchSection />
 
         <Pressable style={style.highlightedImageContainer}>

@@ -1,33 +1,43 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
-  firstName: string;
-  lastName: string;
-  userId: number;
+  displayName: string;
+  email: string;
+  token: string;
+  isLoggedIn: boolean;
   profileImage: string;
 }
 
 const initialState: UserState = {
-  firstName: 'sohrab',
-  lastName: 'hossain',
-  userId: 1,
+  email: '',
+  token: '',
+  displayName: '',
+  isLoggedIn: false,
   profileImage:
     'https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300&vertical=top',
 };
 
-const User = createSlice({
+interface LogInPayload {
+  email: string;
+  token: string;
+  displayName: string;
+  profileImage?: string;
+}
+
+const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    updateFirstName: (state, action: PayloadAction<{ firstName: string }>) => {
-      state.firstName = action.payload.firstName;
+    logIn: (state, action: PayloadAction<LogInPayload>) => {
+      return { ...state, ...{ isLoggedIn: true }, ...action.payload };
     },
-    resetToInitialState: () => {
-      return initialState;
+    resetToInitialState: () => initialState,
+    updateToken: (state, action) => {
+      state.token = action.payload;
     },
   },
 });
 
-// Exporting the reducers here from the "user" slice
-export const { updateFirstName, resetToInitialState } = User.actions;
-export default User.reducer;
+// Export actions and reducer
+export const { logIn, resetToInitialState, updateToken } = userSlice.actions;
+export default userSlice.reducer;

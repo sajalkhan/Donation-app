@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { SafeAreaView, ScrollView, View, Pressable } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Input from '../../components/Input/Input';
 import Header from '../../components/Header/Header';
 import Button from '../../components/Button/Button';
@@ -7,6 +9,9 @@ import Button from '../../components/Button/Button';
 import style from './style';
 import globalStyle from '../../assets/styles/globalStyle';
 import { Routes } from '../../navigation/Routes';
+
+import { loginUser } from '../../api/user';
+import { logIn } from '../../redux/reducers/User';
 
 interface LoginProps {
   navigation: {
@@ -17,9 +22,26 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    // Implement login functionality here
+  const handleLogin = async () => {
+    const result = await loginUser(email, password);
+
+    if (result.error) {
+      Toast.show({
+        type: 'error',
+        text1: result.error,
+      });
+    } else if (result.data) {
+      Toast.show({
+        type: 'success',
+        text1: 'Login successfully',
+        onHide: () => {
+          result.data && dispatch(logIn(result.data));
+          navigation.navigate(Routes.Home);
+        },
+      });
+    }
   };
 
   return (
