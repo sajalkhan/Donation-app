@@ -1,6 +1,9 @@
 /**
  * @format
  */
+if (__DEV__) {
+  require('./ReactotronConfig');
+}
 
 import './gesture-handler';
 import { AppRegistry } from 'react-native';

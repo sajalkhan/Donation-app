@@ -113,7 +113,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
   // Flipper dependencies
-    def flipper_version = '0.191.1'
+    def flipper_version = '0.268.0'
     debugImplementation "com.facebook.flipper:flipper:$flipper_version"
     debugImplementation "com.facebook.flipper:flipper-network-plugin:$flipper_version"
     debugImplementation "com.facebook.flipper:flipper-leakcanary2-plugin:$flipper_version"
@@ -123,9 +123,6 @@ dependencies {
     releaseImplementation 'com.github.theGlenn.flipper-android-no-op:flipperandroidnoop:0.11.4'
     releaseImplementation 'com.github.theGlenn.flipper-android-no-op:soloadernoop:0.11.4'
 
-    // Includes both libraries
-    releaseImplementation 'com.github.theGlenn:flipper-android-no-op:0.11.4'
-    
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

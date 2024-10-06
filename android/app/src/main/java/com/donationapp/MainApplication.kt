@@ -15,8 +15,11 @@ import com.facebook.flipper.android.utils.FlipperUtils
 import com.facebook.flipper.core.FlipperClient
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 
 class MainApplication : Application(), ReactApplication {
+
+    private val networkFlipperPlugin = NetworkFlipperPlugin()
 
     override val reactNativeHost: ReactNativeHost =
         object : DefaultReactNativeHost(this) {
@@ -45,6 +48,7 @@ class MainApplication : Application(), ReactApplication {
         if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
             val client: FlipperClient = AndroidFlipperClient.getInstance(this)
             client.addPlugin(InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()))
+            client.addPlugin(networkFlipperPlugin)  // Add the NetworkFlipperPlugin
             client.start()
         }
 
