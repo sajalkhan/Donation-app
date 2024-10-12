@@ -59,6 +59,7 @@ react {
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
 def enableProguardInReleaseBuilds = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -93,6 +94,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -101,27 +110,35 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+     packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            universalApk false
         }
     }
 }
 
 dependencies {
-    // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
-  // Flipper dependencies
-    def flipper_version = '0.268.0'
-    debugImplementation "com.facebook.flipper:flipper:$flipper_version"
-    debugImplementation "com.facebook.flipper:flipper-network-plugin:$flipper_version"
-    debugImplementation "com.facebook.flipper:flipper-leakcanary2-plugin:$flipper_version"
-    debugImplementation 'com.facebook.soloader:soloader:0.10.4'
-
-    // Include `flipperandroidnoop` and `soloadernoop` individually
-    releaseImplementation 'com.github.theGlenn.flipper-android-no-op:flipperandroidnoop:0.11.4'
-    releaseImplementation 'com.github.theGlenn.flipper-android-no-op:soloadernoop:0.11.4'
+    // Flipper dependencies
+    // def flipper_version = '0.268.0'
+    // debugImplementation "com.facebook.flipper:flipper:$flipper_version"
+    // debugImplementation "com.facebook.flipper:flipper-network-plugin:$flipper_version"
+    // debugImplementation "com.facebook.flipper:flipper-leakcanary2-plugin:$flipper_version"
+    // debugImplementation 'com.facebook.soloader:soloader:0.11.0' // ensure versions match
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
